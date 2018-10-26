@@ -11,12 +11,24 @@ def run(source_folder, dest_folder):
     if not os.path.exists(dest_folder):
         os.mkdir(dest_folder)
     
+    next_id = 1
+    id_map = {}
+
     for fname in os.listdir(source_folder):
         fpath = os.path.join(source_folder, fname)
+
+        person_name, city, nr = fname.split('.')[0].split('_')
+        city = city.strip()
+        if person_name not in id_map:
+            id_map[person_name] = 'person' + str(next_id)
+            next_id += 1
+        fname = id_map[person_name] + '_' +  city + '_' + nr + '.wav'
         fdest = os.path.join(dest_folder, fname.lower())
 
         if fpath.endswith('.wav'):
-            os.rename(fpath, fdest)
+            with open(fpath, 'rb') as f1:
+                with open(fdest, 'wb') as f2:
+                    f2.write(f1.read())
         else:
             fdest = fdest.replace(fname.split('.')[-1], 'wav')
             y, sr = librosa.load(fpath)
