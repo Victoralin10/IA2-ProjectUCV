@@ -1,7 +1,9 @@
-package codigo.app.diegoucharima.com.artiinte;
+package ucvproject.uni.victoralin10.com.ucv_app.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import ucvproject.uni.victoralin10.com.ucv_app.R;
 
 public class ReadComments extends AppCompatActivity {
     @Override
