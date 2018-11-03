@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-import librosa
+import soundfile
 import os
 
 
@@ -10,7 +10,7 @@ def run(source_folder, dest_folder):
         return print("Source folder not found.")
     if not os.path.exists(dest_folder):
         os.mkdir(dest_folder)
-    
+
     next_id = 1
     id_map = {}
 
@@ -25,14 +25,21 @@ def run(source_folder, dest_folder):
         fname = id_map[person_name] + '_' +  city + '_' + nr + '.wav'
         fdest = os.path.join(dest_folder, fname.lower())
 
+        if os.path.exists(fdest):
+            continue
+
         if fpath.endswith('.wav'):
             with open(fpath, 'rb') as f1:
                 with open(fdest, 'wb') as f2:
                     f2.write(f1.read())
         else:
-            fdest = fdest.replace(fname.split('.')[-1], 'wav')
-            y, sr = librosa.load(fpath)
-            librosa.output.write_wav(fdest, y, sr)
+            try:
+                fdest = fdest.replace(fname.split('.')[-1], 'wav')
+                y, sr = soundfile.read(fpath)
+                soundfile.write(fdest, y, sr)
+            except Exception as e:
+                print("Error: ", fpath)
+                print(e)
 
 
 def main():

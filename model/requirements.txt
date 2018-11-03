@@ -1,3 +1,4 @@
+soundfile
 librosa
-tensorflow
 matplotlib
+tensorflow

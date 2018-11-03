@@ -30,6 +30,7 @@ def get_list_files(source_folder):
 def extract_feature(file_name):
     audio, sample_rate = librosa.load(file_name)
     stft = np.abs(librosa.stft(audio))
+
     mfccs = np.mean(librosa.feature.mfcc(y=audio, sr=sample_rate, n_mfcc=40).T, axis=0)
     chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T, axis=0)
     mel = np.mean(librosa.feature.melspectrogram(audio, sr=sample_rate).T, axis=0)
@@ -53,13 +54,17 @@ def run(source_folder, dest_file):
 
     cnt = 1
     for faud in files:
-        features = extract_feature(faud['file'])
-        n_row = [cnt, faud['person'], faud['city'], faud['nro']]
-        for feat in features:
-            n_row.extend(feat)
+        try:
+            features = extract_feature(faud['file'])
+            n_row = [cnt, faud['person'], faud['city'], faud['nro']]
+            for feat in features:
+                n_row.extend(feat)
 
-        csv_out.writerow(n_row)
-        cnt += 1
+            csv_out.writerow(n_row)
+            cnt += 1
+        except Exception as ex:
+            print(faud['file'], str(ex))
+
     f_out.close()
 
 
