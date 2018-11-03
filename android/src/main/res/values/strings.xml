@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Proyecto UNI</string>
+    <string name="username_textview">Username:</string>
+    <string name="password_textview">Password:</string>
+    <string name="submit">Submit</string>
+    <string name="enviar">Enviar</string>
+</resources>
