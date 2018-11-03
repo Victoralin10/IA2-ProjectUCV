@@ -1,0 +1,6 @@
+bottle
+librosa
+boto3
+pynamodb
+python-dotenv
+requests

@@ -1,4 +1,5 @@
 soundfile
 librosa
 matplotlib
+boto3
 tensorflow
