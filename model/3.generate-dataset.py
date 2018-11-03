@@ -24,7 +24,7 @@ def load_samples(file_in):
 def run_join(samples, headers, file_out):
     with open(file_out, 'w') as f1:
         csv_out = csv.writer(f1)
-        header = ['id', 'same-person', 'sam-word']
+        header = ['id', 'same-person']
         header.extend(['1_' + x for x in headers[4:]])
         header.extend(['2_' + x for x in headers[4:]])
         csv_out.writerow(header)
@@ -34,7 +34,7 @@ def run_join(samples, headers, file_out):
                 s1 = samples[i]
                 s2 = samples[j]
 
-                row = [s1['id']+'-'+s2['id'], s1['person']==s2['person'], s1['city']==s2['city']]
+                row = [s1['id']+'-'+s2['id'], s1['person']==s2['person']]
                 for f in headers[4:]:
                     row.append(float(s1[f]))
                 for f in headers[4:]:
