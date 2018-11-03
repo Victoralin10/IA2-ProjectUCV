@@ -19,7 +19,7 @@ def load_data_set(f_csv):
         csv_in = csv.reader(f)
         csv_in.__next__()
         for row in csv_in:
-            rows.append([row[1]] + row[3:])
+            rows.append([row[1]] + row[2:])
 
     def order(a):
         return a[0]
@@ -32,7 +32,7 @@ def load_data_set(f_csv):
 
     def handle_group(group):
         cp_group = group.copy()
-        while len(group) < 2000:
+        while len(group) < 40000:
             group.extend(cp_group.copy())
         n_rows.extend(group)
 
