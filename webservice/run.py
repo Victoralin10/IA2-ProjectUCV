@@ -24,12 +24,13 @@ def do_register():
     logger.debug(str(request.json))
     try:
         resp_code, resp = register.register(request.json)
-    except Exception as e:
+    except Exception as ex:
         resp_code, resp = 500, json.dumps({
             "code": 500,
             "message": "Error.",
-            "error": str(e)
+            "error": str(ex)
         })
+        logger.error(ex, exc_info=True)
 
     response.status = resp_code
     return resp
@@ -46,6 +47,8 @@ def do_login():
             "message": "Error.",
             "error": str(e)
         })
+        logger.error(e, exc_info=True)
+
     response.status = resp_code
     return resp
 
