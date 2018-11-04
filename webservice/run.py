@@ -7,6 +7,7 @@ import os
 import register
 import login
 import json
+import logging
 
 
 bottle.BaseRequest.MEMFILE_MAX = (5<<20)
@@ -16,6 +17,7 @@ dotenv.load_dotenv()
 
 @post('/register')
 def do_register():
+    logging.debug(str(request.json))
     try:
         resp_code, resp = register.register(request.json)
     except Exception as e:
@@ -31,6 +33,7 @@ def do_register():
 
 @post('/login')
 def do_login():
+    logging.debug(request.json)
     try:
         resp_code, resp = login.login(request.json)
     except Exception as e:
@@ -51,6 +54,12 @@ def index(error):
     })
 
 
-port = int(os.environ.get("PORT", "8080"))
-host = os.environ.get('HOST', 'localhost')
-run(host=host, port=port, debug=True)
+logging.basicConfig(
+    filename="app.log",
+    level=logging.DEBUG
+)
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", "8080"))
+    host = os.environ.get('HOST', 'localhost')
+    run(host=host, port=port, debug=True)
