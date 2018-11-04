@@ -31,7 +31,7 @@ import ucvproject.uni.victoralin10.com.ucv_app.R;
 
 
 public class Register extends AppCompatActivity {
-    private EditText user, pass;
+    private EditText user, pass, theemail, firstName, lastName;
     private Button mRegister;
     private MediaRecorder grabacion;
     private String archivoSalida = null;
@@ -57,6 +57,9 @@ public class Register extends AppCompatActivity {
 
         user = (EditText) findViewById(R.id.username);
         pass = (EditText) findViewById(R.id.password);
+        theemail = (EditText) findViewById(R.id.email);
+        firstName = (EditText) findViewById(R.id.fname);
+        lastName = (EditText) findViewById(R.id.lname);
 
         mRegister = (Button) findViewById(R.id.register);
         //mRegister.setOnClickListener(this);
@@ -92,15 +95,18 @@ public class Register extends AppCompatActivity {
             // Check for success tag
             String username = user.getText().toString();
             String password = pass.getText().toString();
+            String correo = theemail.getText().toString();
+            String first_name = firstName.getText().toString();
+            String last_name = lastName.getText().toString();
             try {
                 // Building Parameters
                 JSONObject data = new JSONObject();
 
                 data.put("username", username);
                 data.put("password", password);
-                data.put("email", "ingvcueva@gmail.com");
-                data.put("firstName", "Victor");
-                data.put("lastName", "Cueva");
+                data.put("email", correo);
+                data.put("firstName", first_name);
+                data.put("lastName", last_name);
 
                 File file = new File(archivoSalida);
                 String encodedFile= "";
