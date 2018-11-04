@@ -11,6 +11,7 @@ URL = "http://{host}:{port}".format(
     host=os.environ.get('HOST', 'localhost'),
     port=os.environ.get('PORT', '8080')
 )
+# URL = "https://0n31isnqy6.execute-api.us-east-1.amazonaws.com/prod/"
 
 def test_register():
     with open('audio1.wav', "rb") as f:
