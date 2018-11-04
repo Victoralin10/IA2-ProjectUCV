@@ -11,13 +11,17 @@ import logging
 
 
 bottle.BaseRequest.MEMFILE_MAX = (5<<20)
-
 dotenv.load_dotenv()
+
+logger = logging.Logger("api")
+handler = logging.FileHandler("app.log")
+logger.addHandler(handler)
+logger.setLevel(int(os.environ.get("LOG_LEVEL", "40")))
 
 
 @post('/register')
 def do_register():
-    logging.debug(str(request.json))
+    logger.debug(str(request.json))
     try:
         resp_code, resp = register.register(request.json)
     except Exception as e:
@@ -33,7 +37,7 @@ def do_register():
 
 @post('/login')
 def do_login():
-    logging.debug(request.json)
+    logger.debug(request.json)
     try:
         resp_code, resp = login.login(request.json)
     except Exception as e:
@@ -53,11 +57,6 @@ def index(error):
         "message": "Hello World"
     })
 
-
-logging.basicConfig(
-    filename="app.log",
-    level=logging.DEBUG
-)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "8080"))
