@@ -1,0 +1,101 @@
+swagger: "2.0"
+info:
+  description: "API for UCV Project"
+  version: "1.0.0"
+  title: "UCV Project API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "ingvcueva@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "0n31isnqy6.execute-api.us-east-1.amazonaws.com"
+basePath: "/prod"
+tags:
+- name: "user"
+  description: "Everything about your Users"
+schemes:
+- "https"
+paths:
+  /register:
+    post:
+      tags: 
+        - user
+      summary: "Register a new user"
+      description: ""
+      operationId: "register"
+      consumes: 
+        - "application/json"
+      produces: 
+        - "application/json"
+      parameters: 
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ApiResponse'
+  /login:
+    post:
+      tags:
+        - user
+      summary: "Login user"
+      description: ""
+      operationId: "login"
+      consumes: 
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters: 
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Login'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ApiResponse'
+definitions:
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      username:
+        type: "string"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      audio:
+        type: "string"
+        description: "Base64 encoded audio"
+  Login:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      password:
+        type: "string"
+      audio:
+        type: "string"
+        description: "Base64 encoded audio"
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
