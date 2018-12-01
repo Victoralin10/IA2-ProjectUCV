@@ -30,18 +30,16 @@ def run(source_folder, dest_folder):
         if os.path.exists(fdest):
             continue
 
-        if fpath.endswith('.wav'):
-            with open(fpath, 'rb') as f1:
-                with open(fdest, 'wb') as f2:
-                    f2.write(f1.read())
-        else:
-            try:
-                fdest = fdest.replace(fname.split('.')[-1], 'wav')
-                y, sr = soundfile.read(fpath)
-                soundfile.write(fdest, y, sr)
-            except Exception as e:
-                print("Error: ", fpath)
-                print(e)
+        try:
+            fdest = fdest.replace(fname.split('.')[-1], 'wav')
+            y, sr = soundfile.read(fpath)
+            soundfile.write(fdest, y, sr)
+        except Exception as e:
+            print("Error: ", fpath)
+            print(e)
+    
+    for k, v in sorted(id_map.items()):
+        print("{1}: {0}".format(k, v))
 
 
 def main():

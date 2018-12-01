@@ -41,7 +41,7 @@ def check(audio1, audio2):
     for i in range(len(features1)):
         query_features.append(abs(features1[i] - features2[i]))
     feat_names = []
-    for tp, length in [('mfcss', 40), ('chroma', 12), ('mel', 128), ('contrast', 7), ('tonnetz', 6)]:
+    for tp, length in [('mfccs', 40), ('chroma', 12), ('mel', 128), ('contrast', 7), ('tonnetz', 6)]:
         feat_names.extend([tp + str(x) for x in range(length)])
     
     record = {}
@@ -55,7 +55,6 @@ def check(audio1, audio2):
     prob = response['Prediction']['predictedScores'][ans]
     prob = round(prob*100, 2)
 
-    # print(json.dumps(response, indent=2))
     if ans == "1":
         print("Same person with %{0} probabilities.".format(prob))
     else:

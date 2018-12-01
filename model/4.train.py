@@ -8,6 +8,7 @@ import argparse
 import matplotlib.pyplot as plt
 import os
 import random
+import copy
 
 
 def load_data_set(f_csv):
@@ -17,9 +18,9 @@ def load_data_set(f_csv):
     rows = []
     with open(f_csv) as f:
         csv_in = csv.reader(f)
-        csv_in.__next__()
+        csv_in.next()
         for row in csv_in:
-            rows.append([row[1]] + row[2:])
+            rows.append(row[1:])
 
     def order(a):
         return a[0]
@@ -29,11 +30,12 @@ def load_data_set(f_csv):
 
     prev = '-1'
     n_rows, tmp = [], []
+    groups = []
 
-    def handle_group(group):
-        cp_group = group.copy()
-        while len(group) < 40000:
-            group.extend(cp_group.copy())
+    def handle_group(group, mx_len):
+        cp_group = copy.copy(group)
+        while len(group) < mx_len:
+            group.extend(copy.copy(cp_group))
         n_rows.extend(group)
 
     for row in rows:
@@ -41,9 +43,13 @@ def load_data_set(f_csv):
             tmp.append(row)
         else:
             if len(tmp) > 0:
-                handle_group(tmp)
+                groups.append(tmp)
             tmp = [row]
         prev = row[0]
+
+    mx_len = max(len(groups[0]), len(groups[1]))
+    handle_group(groups[0], mx_len)
+    handle_group(groups[1], mx_len)
 
     random.shuffle(n_rows)
     features, labels = [], []
@@ -131,23 +137,22 @@ def load_args():
     parser.add_argument('--learning_rate', '-lr', type=float, default=1e-6, help='Learning rate')
     parser.add_argument('--model_dir', '-md', type=str, help='Folder to save model', default='./model')
     parser.add_argument('dataset', type=str, help='Csv file with dataset')
+    parser.add_argument('test', type=str, help='CSv file with tests')
     return parser.parse_args()
 
 
 def main():
     args = load_args()
     print('Loading dataset...')
-    data_features, data_tags = load_data_set(args.dataset)
-    # data_features, data_tags = balance_data(data_features, data_tags)
+ 
+    tr_features, tr_labels = load_data_set(args.dataset)
+    tr_labels = one_hot_labels(tr_labels)
+    tr_features = np.array(tr_features, dtype=np.float32)
 
-    data_tags = one_hot_labels(data_tags)
-    data_features = np.array(data_features, dtype=np.float32)
+    ts_features, ts_labels = load_data_set(args.test)
+    ts_labels = one_hot_labels(ts_labels)
+    ts_features = np.array(ts_features, dtype=np.float32)
 
-    total_cnt = len(data_features)
-    training_cnt = int(total_cnt*0.7)
-
-    tr_features, tr_labels = data_features[0:training_cnt], data_tags[0:training_cnt]
-    ts_features, ts_labels = data_features[training_cnt:], data_tags[training_cnt:]
     print('Running training...')
     make_model(tr_features, tr_labels, ts_features, ts_labels, args.epochs, args.learning_rate, args.model_dir)
 
