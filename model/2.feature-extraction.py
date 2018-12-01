@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import argparse
 import librosa
 import os
 import numpy as np
-import csv
+import pandas as pd
 
 
 def get_list_files(source_folder):
@@ -41,31 +42,30 @@ def extract_feature(file_name):
 
 def run(source_folder, dest_file):
     # Headers
-    f_out = open(dest_file, 'w')
-    csv_out = csv.writer(f_out)
-
-    n_row = ['id', 'person', 'city', 'nro']
+    headers = ['person', 'city', 'nro']
     for tp, length in [('mfcss', 40), ('chroma', 12), ('mel', 128), ('contrast', 7), ('tonnetz', 6)]:
-        n_row.extend([tp + str(x) for x in range(length)])
-    csv_out.writerow(n_row)
+        headers.extend([tp + str(x) for x in range(length)])
 
     # Listing files
     files = get_list_files(source_folder)
+    data = []
 
     cnt = 1
     for faud in files:
         try:
             features = extract_feature(faud['file'])
-            n_row = [cnt, faud['person'], faud['city'], faud['nro']]
+            n_row = [faud['person'], faud['city'], faud['nro']]
             for feat in features:
                 n_row.extend(feat)
 
-            csv_out.writerow(n_row)
+            data.append(n_row)
+            print("{0} of {1}".format(cnt, len(files)), end='\r')
             cnt += 1
         except Exception as ex:
             print(faud['file'], str(ex))
-
-    f_out.close()
+    print("")
+    data_frame = pd.DataFrame(data, columns=headers)
+    data_frame.to_csv(dest_file)
 
 
 def main():

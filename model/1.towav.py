@@ -7,7 +7,8 @@ import os
 
 def run(source_folder, dest_folder):
     if not os.path.exists(source_folder) or not os.path.isdir(source_folder):
-        return print("Source folder not found.")
+        print("Source folder not found.")
+        return
     if not os.path.exists(dest_folder):
         os.mkdir(dest_folder)
 
@@ -17,12 +18,13 @@ def run(source_folder, dest_folder):
     for fname in os.listdir(source_folder):
         fpath = os.path.join(source_folder, fname)
 
-        person_name, city, nr = fname.split('.')[0].split('_')
+        aux = fname.split('.')[0].split('_')
+        person_name, city = aux[0], aux[1]
         city = city.strip()
         if person_name not in id_map:
             id_map[person_name] = 'person' + str(next_id)
             next_id += 1
-        fname = id_map[person_name] + '_' +  city + '_' + nr + '.wav'
+        fname = id_map[person_name] + '_' +  city + '.wav'
         fdest = os.path.join(dest_folder, fname.lower())
 
         if os.path.exists(fdest):

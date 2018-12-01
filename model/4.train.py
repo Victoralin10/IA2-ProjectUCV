@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import numpy as np
 import tensorflow as tf
 import csv
@@ -11,8 +12,7 @@ import random
 
 def load_data_set(f_csv):
     if not os.path.exists(f_csv):
-        print('Csv Data-Set not found.')
-        return
+        return print('Csv Data-Set not found.')
 
     rows = []
     with open(f_csv) as f:

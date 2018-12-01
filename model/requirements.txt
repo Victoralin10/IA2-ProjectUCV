@@ -2,4 +2,5 @@ soundfile
 librosa
 matplotlib
 boto3
+pandas
 tensorflow

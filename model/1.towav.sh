@@ -1,6 +1,11 @@
 #!/bin/bash
 
-for f in data-original/*
+audio_dir=$1
+if [ "$audio_dir" == "" ]; then
+    audio_dir="data-original"
+fi
+
+for f in $audio_dir/*
 do
     if [[ "$f" =~ .*wav$ ]]; then
         echo $f

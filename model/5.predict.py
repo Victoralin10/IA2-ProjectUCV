@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import numpy as np
 import argparse
 import os
@@ -18,6 +19,7 @@ def extract_feature(file_name):
     contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T, axis=0)
     tonnetz = np.mean(librosa.feature.tonnetz(y=librosa.effects.harmonic(audio), sr=sample_rate).T, axis=0)
     return mfccs, chroma, mel, contrast, tonnetz
+
 
 def get_features(audio_file):
     features = extract_feature(audio_file)
@@ -51,7 +53,7 @@ def check(audio1, audio2):
     response = client.predict(MLModelId="ml-Wqrg1MNDzTW", Record=record, PredictEndpoint="https://realtime.machinelearning.us-east-1.amazonaws.com")
     ans = response['Prediction']['predictedLabel']
     prob = response['Prediction']['predictedScores'][ans]
-    prob = prob*100
+    prob = round(prob*100, 2)
 
     # print(json.dumps(response, indent=2))
     if ans == "1":
