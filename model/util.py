@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import numpy as np
 import argparse
 import os
@@ -8,6 +9,9 @@ import boto3
 import json
 import pandas
 import json
+import csv
+import random
+import copy
 
 
 features_names = []
@@ -37,7 +41,57 @@ def features_dict(file_name):
     return ans
 
 
-def normalize_train(file):
+def balance_data(f_csv):
+    if not os.path.exists(f_csv):
+        return print('Csv Data-Set not found.')
+
+    rows = []
+    with open(f_csv) as f:
+        csv_in = csv.reader(f)
+        headers = csv_in.next()
+        for row in csv_in:
+            rows.append(row[1:])
+
+    def order(a):
+        return a[0]
+
+    rows = sorted(rows, key=order)
+    rows.append(['end'])
+
+    prev = '-1'
+    n_rows, tmp = [], []
+    groups = []
+
+    def handle_group(group, mx_len):
+        cp_group = copy.copy(group)
+        while len(group) < mx_len:
+            group.extend(copy.copy(cp_group))
+        n_rows.extend(group)
+
+    for row in rows:
+        if row[0] == prev:
+            tmp.append(row)
+        else:
+            if len(tmp) > 0:
+                groups.append(tmp)
+            tmp = [row]
+        prev = row[0]
+
+    mx_len = max(len(groups[0]), len(groups[1]))
+    handle_group(groups[0], mx_len)
+    handle_group(groups[1], mx_len)
+
+    random.shuffle(n_rows)
+    with open('bal-' + f_csv, 'w') as f:
+        csv_out = csv.writer(f)
+        csv_out.writerow(headers)
+        ind = 0
+        for row in n_rows:
+            csv_out.writerow([ind] + row)
+            ind += 1
+
+
+def normalize_train(file, fout=None):
     df = pandas.read_csv(file, index_col=0)
 
     z = {}
@@ -49,18 +103,22 @@ def normalize_train(file):
         df[feature] = (df[feature] - z[feature]['mean'])/z[feature]['stdev']
     
     json.dump(z, open('z.json', 'w'), ensure_ascii=False, indent=2)
-    df.to_csv('norm-' + file)
+
+    if fout is None:
+        fout = 'norm-' + file
+    df.to_csv(fout)
 
 
-def normalize_test(file):
+def normalize_test(file, fout=None):
     df = pandas.read_csv(file, index_col=0)
     z = json.load(open('z.json'))
 
     for feature in features_names:
         df[feature] = (df[feature] - z[feature]['mean'])/z[feature]['stdev']
     
-    df.to_csv('norm-' + file)
-
+    if fout is None:
+        fout = 'norm-' + file
+    df.to_csv(fout)
 
 def main():
     normalize_train('training.csv')
