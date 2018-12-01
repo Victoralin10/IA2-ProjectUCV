@@ -15,47 +15,13 @@ def load_data_set(f_csv):
     if not os.path.exists(f_csv):
         return print('Csv Data-Set not found.')
 
-    rows = []
+    features, labels = [], []
     with open(f_csv) as f:
         csv_in = csv.reader(f)
         csv_in.next()
         for row in csv_in:
-            rows.append(row[1:])
-
-    def order(a):
-        return a[0]
-
-    rows = sorted(rows, key=order)
-    rows.append(['end'])
-
-    prev = '-1'
-    n_rows, tmp = [], []
-    groups = []
-
-    def handle_group(group, mx_len):
-        cp_group = copy.copy(group)
-        while len(group) < mx_len:
-            group.extend(copy.copy(cp_group))
-        n_rows.extend(group)
-
-    for row in rows:
-        if row[0] == prev:
-            tmp.append(row)
-        else:
-            if len(tmp) > 0:
-                groups.append(tmp)
-            tmp = [row]
-        prev = row[0]
-
-    mx_len = max(len(groups[0]), len(groups[1]))
-    handle_group(groups[0], mx_len)
-    handle_group(groups[1], mx_len)
-
-    random.shuffle(n_rows)
-    features, labels = [], []
-    for row in n_rows:
-        labels.append(row[0])
-        features.append(row[1:])
+            labels.append(row[1])
+            features.append(row[2:])
     return features, labels
 
 

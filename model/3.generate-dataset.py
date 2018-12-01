@@ -6,6 +6,7 @@ import csv
 import random
 import pandas
 import numpy as np
+import util
 
 
 def load_samples(file_in):
@@ -49,7 +50,8 @@ def run(file_in, prop, training_out, test_out):
     if prop < 0 or prop > 1:
         prop = 0.7
 
-    samples, headers = load_samples(file_in)
+    util.normalize_train(file_in, 'norm' + file_in)
+    samples, headers = load_samples('norm' + file_in)
     random.shuffle(samples)
 
     n = int(len(samples)*prop)

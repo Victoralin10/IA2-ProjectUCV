@@ -19,6 +19,9 @@ for tp, length in [('mfccs', 40), ('chroma', 12), ('mel', 128), ('contrast', 7),
     features_names.extend([tp + str(x) for x in range(length)])
 
 
+zmean = json.load(open('z.json'))
+
+
 def extract_feature(file_name):
     audio, sample_rate = librosa.load(file_name)
     stft = np.abs(librosa.stft(audio))
