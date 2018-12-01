@@ -33,6 +33,8 @@ def register(body):
         f.write(audio)
 
     features = util2.features_dict(fname)
+    features = util2.normalize_feature(features)
+
     user = dbmodels.User(username=username,
                          email=body['email'],
                          password=body['password'],

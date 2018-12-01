@@ -42,18 +42,15 @@ def login(body):
         f.write(audio)
 
     test_features = util2.features_dict(fname)
+    test_features = util2.normalize_feature(test_features)
 
     record = {}
     for feat in util2.features_names:
-        record[feat] = abs(saved_features[feat] - test_features[feat])
-        mean = util2.zmean[feat]['mean']
-        stdev = util2.zmean[feat]['stdev']
-        record[feat] = str((record[feat] - mean)/stdev)
+        record[feat] = str(abs(saved_features[feat] - test_features[feat]))
     record['id'] = '1'
-    print(record)
 
     client = boto3.client('machinelearning')
-    response = client.predict(MLModelId="ml-2EYiaqUQDVw", Record=record, PredictEndpoint="https://realtime.machinelearning.us-east-1.amazonaws.com")
+    response = client.predict(MLModelId="ml-wp93CRI1IxD", Record=record, PredictEndpoint="https://realtime.machinelearning.us-east-1.amazonaws.com")
     ans = response['Prediction']['predictedLabel']
 
     if ans == "0":
