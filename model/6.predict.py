@@ -17,16 +17,18 @@ def check(audio1, audio2):
         return print("Audio2 fiel does not exist.")
 
     features1 = util.features_dict(audio1)
+    features1 = util.normalize_feature(features1)
+
     features2 = util.features_dict(audio2)
+    features2 = util.normalize_feature(features2)
 
     record = {}
     for feat in util.features_names:
-        record[feat] = abs(features1[feat] - features2[feat])
-        record[feat] = str((record[feat] - util.zmean[feat]['mean'])/util.zmean[feat]['stdev'])
+        record[feat] = str(abs(features1[feat] - features2[feat]))
     record['id'] = '1'
 
     client = boto3.client('machinelearning')
-    response = client.predict(MLModelId="ml-2EYiaqUQDVw", Record=record, PredictEndpoint="https://realtime.machinelearning.us-east-1.amazonaws.com")
+    response = client.predict(MLModelId="ml-wp93CRI1IxD", Record=record, PredictEndpoint="https://realtime.machinelearning.us-east-1.amazonaws.com")
     ans = response['Prediction']['predictedLabel']
     prob = response['Prediction']['predictedScores'][ans]
     prob = round(prob*100, 2)

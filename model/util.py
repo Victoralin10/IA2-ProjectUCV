@@ -44,6 +44,13 @@ def features_dict(file_name):
     return ans
 
 
+def normalize_feature(feature_dict):
+    ans = {}
+    for feat in features_names:
+        ans[feat] = (feature_dict[feat] - zmean[feat]['mean'])/zmean[feat]['stdev']
+    return ans
+
+
 def balance_data(f_csv):
     if not os.path.exists(f_csv):
         return print('Csv Data-Set not found.')
