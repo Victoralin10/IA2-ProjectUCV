@@ -52,6 +52,7 @@ def login(body):
     client = boto3.client('machinelearning')
     response = client.predict(MLModelId="ml-wp93CRI1IxD", Record=record, PredictEndpoint="https://realtime.machinelearning.us-east-1.amazonaws.com")
     ans = response['Prediction']['predictedLabel']
+    print(response['Prediction'])
 
     if ans == "0":
         return 401, json.dumps({
